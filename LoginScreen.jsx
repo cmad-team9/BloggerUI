@@ -65,9 +65,12 @@
   	}
 
   	handleSignUp(event) {
-  		console.log('Sign up requested');
-
-      this.props.onLoginDataReceived(null);
+  		console.log('Sign up requested++');
+      var loginData = {"userData" : null,
+                      "loginReason" : this.props.loginReason
+                      }
+      console.log('Sign up requested loginData:'+loginData);
+      this.props.onLoginDataReceived(loginData);
   	}
 
   	render() {

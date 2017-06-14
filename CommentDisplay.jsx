@@ -72,8 +72,8 @@ class CommentDisplay extends React.Component {
 		console.log("comment Display render");
 		var style = {
 			marginLeft: "10%",
-			marginTop: "5%",
-			marginRight:"25%",
+			//marginTop: "5%",
+			marginRight:"45%",
 
 		}
 
@@ -82,9 +82,9 @@ class CommentDisplay extends React.Component {
 			fontStyle:"italic",
 			fontSize :"12px"
 		}
-		var commentAuthor = this.props.commentData.commentorId;
-		var commentTime = this.props.commentData.postedDate;
-		var commentDescription = this.props.commentData.comment;
+		var commentAuthor =(this.props.commentData === undefined) ? "test": this.props.commentData.commentorId;
+		var commentTime = (this.props.commentData === undefined) ? "test":this.props.commentData.postedDate;
+		var commentDescription = (this.props.commentData === undefined) ? "test":this.props.commentData.comment;
 		return (
 
       <div id ='newcommentIdx' style={style}>

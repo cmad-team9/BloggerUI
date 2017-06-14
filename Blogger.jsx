@@ -33,7 +33,7 @@
 				selectedBlog : null
 
 			};
-			//this.onSubmitStatusChangedCB = this.onSubmitStatusChangedCB.bind(this);
+			this.onLoginRequestForComment = this.onLoginRequestForComment.bind(this);
 			this.onNavOptionsSelectCB = this.onNavOptionsSelectCB.bind(this);
 			this.onLoginDataReceivedCB = this.onLoginDataReceivedCB.bind(this);
 			this.onNewUserDataReceivedCB = this.onNewUserDataReceivedCB.bind(this);
@@ -87,7 +87,7 @@
 						if(newUserData.userAddReason === BloggerConstants.LOGIN_TO_ADDBLOG){
 							nextState = BloggerConstants.STATE_NEW_BLOG;
 						} else if (newUserData.userAddReason === BloggerConstants.LOGIN_TO_ADDCOMMENT) {
-
+							nextState = BloggerConstants.STATE_VIEW_BLOG;
 						} else {
 							nextState = BloggerConstants.STATE_HOME_LOGGEDIN;
 						}
@@ -122,6 +122,7 @@
 					currentAppState:BloggerConstants.STATE_SIGNUP
 				});
 			} else{
+
 				console.log("Blogger onLoginDataReceivedCB userId :"+userData.userId);
 				console.log("Blogger onLoginDataReceivedCB password:"+userData.password);
 
@@ -150,8 +151,8 @@
 						console.log("loginForm settingState userData.loginReason :"+loginData.loginReason );
 						if(loginData.loginReason === BloggerConstants.LOGIN_TO_ADDBLOG){
 							nextState = BloggerConstants.STATE_NEW_BLOG;
-						} else if (userData.loginReason === BloggerConstants.LOGIN_TO_ADDCOMMENT) {
-
+						} else if (loginData.loginReason === BloggerConstants.LOGIN_TO_ADDCOMMENT) {
+							nextState = BloggerConstants.STATE_VIEW_BLOG;
 						} else {
 							nextState = BloggerConstants.STATE_HOME_LOGGEDIN;
 						}
@@ -301,14 +302,15 @@
 	  //
 		// }
 	  //
-		// handleCancel(event) {
-		// 	this.setState({
-		// 		blogTitle: "",
-		// 		blogDescription: "",
-		// 		blogTitleValid:null,
-		// 		blogDescriptionValid:null
-		// 	});
-		// }
+		onLoginRequestForComment() {
+
+			this.setState({
+				currentAppState:BloggerConstants.STATE_LOGIN,
+				loginReason  : BloggerConstants.LOGIN_TO_ADDCOMMENT
+
+
+			});
+		}
 	// <NewBlog submitStatus="none" onSubmitStatusChanged={this.onSubmitStatusChangedCB} />
 		render() {
 			console.log("BLOGGER++ render:"+BloggerConstants.STATE_HOME_LOGGEDOUT);
@@ -345,14 +347,14 @@
 			  case BloggerConstants.STATE_HOME_LOGGEDIN:
 				     currentScreenLayout =  <div>
 																				 <TNavBar configureOptions={BloggerConstants.NAVBAR_SHOW_LOGGEDIN_OPTIONS} loggedInUserId={this.state.loggedInUserId} onNavOptionsSelect={this.onNavOptionsSelectCB}/>
-																				 <BloggerHome userFilter = {this.state.loggedInUserId}/>
+																				 <BloggerHome onUserTriggerForDetailedView ={this.onUserTriggerForDetailedViewCB} userFilter = {this.state.loggedInUserId}/>
 																		</div>
 																		break;
 				case BloggerConstants.STATE_HOME_LOGGEDIN_ALLBLOGS:
 						console.log("Showing STATE_HOME_LOGGEDIN_ALLBLOGS-+-");
 						currentScreenLayout =  <div>
 																				<TNavBar configureOptions={BloggerConstants.NAVBAR_SHOW_LOGGEDIN_OPTIONS} loggedInUserId={this.state.loggedInUserId} onNavOptionsSelect={this.onNavOptionsSelectCB}/>
-																				<BloggerHome></BloggerHome>
+																				<BloggerHome onUserTriggerForDetailedView ={this.onUserTriggerForDetailedViewCB}></BloggerHome>
 																		</div>
 																		break;
 				case BloggerConstants.STATE_HOME_SEARCHRESULTS:
@@ -379,7 +381,7 @@
 				console.log("Showing STATE_VIEW_BLOG");
 				currentScreenLayout =  <div>
 																		{NavBarConfig}
-																		<BlogAndCommentsScrn selectedBlogData = {this.state.selectedBlog}/>
+																		<BlogAndCommentsScrn selectedBlogData = {this.state.selectedBlog} loggedInUser = {this.state.loggedInUserId} onLoginRequestForComment={this.onLoginRequestForComment}/>
 															 </div>
 															 break;
 

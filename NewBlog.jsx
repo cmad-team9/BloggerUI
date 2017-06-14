@@ -1,5 +1,5 @@
 import React from 'react';
-import {FormGroup, ControlLabel,FormControl} from 'react-bootstrap'
+import {FormGroup, ControlLabel,FormControl,Button} from 'react-bootstrap'
 
 
 
@@ -107,8 +107,8 @@ class NewBlog extends React.Component {
 					<ControlLabel>Blog Description</ControlLabel>
 					<FormControl componentClass="textarea" rows="10" placeholder="Enter Description" name="blogDescription" onChange={this.handleChange}/>
 				</FormGroup>
-				<button type="submit" id="submitNewBlogbtn" onClick={this.handleSubmit}>Submit</button>	&nbsp;
-				<button type="reset" id="cancelNewBlogbtn" onClick={this.handleCancel}>Clear</button>
+				<Button type="submit" id="submitNewBlogbtn" onClick={this.handleSubmit}>Submit</Button>	&nbsp;
+				<Button type="reset" id="cancelNewBlogbtn" onClick={this.handleCancel}>Clear</Button>
 			</form>
 		);
 	}

@@ -66,7 +66,7 @@ class BlogDisplay extends React.Component {
 		var style = {
 			marginLeft: "10%",
 			marginTop: "5%",
-			marginRight:"10%",
+			marginRight:"10%"
 		};
 		var headingStyle = {
 			textAlign:"center",
@@ -77,10 +77,10 @@ class BlogDisplay extends React.Component {
 			fontStyle:"italic",
       fontWeight:"bold"
 		}
-		var blogTitle = this.props.blogData.title;
-		var blogDescription = this.props.blogData.description;
-		var blogAuthor = this.props.blogData.userId;
-		var blogPostedDate = this.props.blogData.postedDate;
+		var blogTitle = (this.props.blogData === undefined) ? "":this.props.blogData.title;
+		var blogDescription = (this.props.blogData === undefined) ? "":this.props.blogData.description;
+		var blogAuthor = (this.props.blogData === undefined) ? "":this.props.blogData.userId;
+		var blogPostedDate = (this.props.blogData === undefined) ? "":this.props.blogData.postedDate;
 		var addViewComments = null;
 		if(this.props.hideCommentOption != true){
 			addViewComments = <a href="#" id = "commentOptionspost" onClick={this.handleViewAddComments} >COMMENTS </a>

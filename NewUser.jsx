@@ -1,5 +1,5 @@
 import React from 'react';
-import {Form,FormGroup, ControlLabel,FormControl,Col,ButtonGroup} from 'react-bootstrap'
+import {Form,FormGroup, ControlLabel,FormControl,Col,ButtonGroup,Button} from 'react-bootstrap'
 
 
 
@@ -180,8 +180,8 @@ class NewUser extends React.Component {
              </Col>
            </FormGroup>
         <ButtonGroup style={buttonStyle}>
-				<button type="submit" id="submitNewUserbtn" onClick={this.handleSubmit}>Submit</button>	&nbsp;
-				<button type="reset" id="cancelNewUserbtn" onClick={this.handleCancel}>Clear</button>
+				<Button type="submit" id="submitNewUserbtn" onClick={this.handleSubmit}>Submit</Button>	&nbsp;
+				<Button type="reset" id="cancelNewUserbtn" onClick={this.handleCancel}>Clear</Button>
         </ButtonGroup>
 			</Form>
     </div>
