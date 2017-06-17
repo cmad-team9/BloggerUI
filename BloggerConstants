@@ -36,9 +36,7 @@ const BloggerConstants = {
     LOGIN_TO_ADDBLOG : "LoginToAddBlog",
     LOGIN_TO_ADDCOMMENT : "LoginToAddComment",
 
-    //Comment Sorting Order
-    COMMENTS_OLDEST_FIRST :"CommentsOldestFirst",
-    COMMENTS_RECENT_FIRST :"CommentsRecentFirst",
+  
 
     // App configurations
     BLOG_PAGESIZE : 3,

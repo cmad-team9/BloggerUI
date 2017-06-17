@@ -14,6 +14,8 @@ class TNavBar extends React.Component {
 		this.handleSelect = this.handleSelect.bind(this);
 		this.searchBlogs = this.searchBlogs.bind(this);
 
+		this.onHomeSelect = this.onHomeSelect.bind(this);
+
 	}
 
 	// processLogin() {
@@ -53,46 +55,56 @@ handleChange(event) {
 		event.preventDefault();
 
 		console.log("handle select eventKey:"+eventKey);
-		switch(eventKey){
-			case 1://Create Blog
-				//this.handleCreateBlog();
-				break;
-			case 2://login
-				//this.processLogin();
-				console.log("Calling Callback");
-				this.props.onNavOptionsSelect(BloggerConstants.NAVBAR_LOGIN);
-				break;
-			case 4.2://logout
-				//this.processLogout();
-				break;
-			case BloggerConstants.NAVBAR_CREATE_BLOG:
-				console.log("Calling Callback NAVBAR_CREATE_BLOG");
-				this.props.onNavOptionsSelect(BloggerConstants.NAVBAR_CREATE_BLOG);
-			default:
-				break;
-		}
+		// switch(eventKey){
+		// 	case 1://Create Blog
+		// 		//this.handleCreateBlog();
+		// 		break;
+		// 	case 2://login
+		// 		//this.processLogin();
+		// 		console.log("Calling Callback");
+		// 		this.props.onNavOptionsSelect(BloggerConstants.NAVBAR_LOGIN);
+		// 		break;
+		// 	case 4.2://logout
+		// 		//this.processLogout();
+		// 		break;
+		// 	case BloggerConstants.NAVBAR_CREATE_BLOG:
+		// 		console.log("Calling Callback NAVBAR_CREATE_BLOG");
+		// 		this.props.onNavOptionsSelect(BloggerConstants.NAVBAR_CREATE_BLOG);
+		// 	default:
+			console.log("Navbar handleSelect deafult Calling Callback");
+				this.props.onNavOptionsSelect(eventKey);
+		//		break;
+		//}
 		console.log("setting search input empty");
 		this.setState({
 			searchInput: ""
 		});
 	}
 
+
+onHomeSelect() {
+	this.props.onNavOptionsSelect(BloggerConstants.NAVBAR_HOME);
+	this.setState({
+		searchInput: ""
+	});
+}
+
 	render() {
 		console.log("Navbar render## searchInput:"+this.state.searchInput);
-		var loggedInTitle = "Hi "+this.props.loggedInUserId+" !";
+		var loggedInTitle = this.props.loggedInUserId;//"Hi "+this.props.loggedInUserId+" !";
 		console.log("loggedInTitle :"+loggedInTitle);
 		var loggedOutOptions = <Nav pullRight  onSelect={this.handleSelect}>
 									<NavItem eventKey={BloggerConstants.NAVBAR_CREATE_BLOG} href="#">Create Blog</NavItem>
-									<NavItem eventKey={2} href="#" >Login</NavItem>
+									<NavItem eventKey={BloggerConstants.NAVBAR_LOGIN} href="#" >Login</NavItem>
 								</Nav>;
 		var loggedInOptions =
 								<div>
 									<Nav pullRight   onSelect={this.handleSelect}>
 										<NavItem eventKey={BloggerConstants.NAVBAR_CREATE_BLOG} href="#">Create Blog</NavItem>
 										<NavDropdown eventKey={4} title={loggedInTitle} id="basic-nav-dropdown">
-										  <MenuItem eventKey={4.1}>Update Profile</MenuItem>
+										  <MenuItem eventKey={BloggerConstants.NAVBAR_UPDATE_PROFILE}>Update Profile</MenuItem>
 										   <MenuItem divider />
-										  <MenuItem eventKey={4.2}>Logout</MenuItem>
+										  <MenuItem eventKey={BloggerConstants.NAVBAR_LOGOUT}>Logout</MenuItem>
 										</NavDropdown>
 									</Nav>
 									  <Navbar.Form pullRight>
@@ -122,10 +134,10 @@ handleChange(event) {
 		}
 	//	var displayData = (this.props.loginStatus === BloggerConstants.LOGIN_STATUS_SUCCESS) ? loggedInOptions : loggedOutOptions;
 		return (
-			<Navbar inverse collapseOnSelect>
-				<Navbar.Header >
-				  <Navbar.Brand>
-					<a href="#">T9Blogger</a>
+			<Navbar inverse collapseOnSelect fixedTop>
+				<Navbar.Header  >
+				  <Navbar.Brand >
+					<a href="#"  onClick={this.onHomeSelect}>T9BloggerV3onC</a>
 				  </Navbar.Brand>
 				  <Navbar.Toggle />
 				</Navbar.Header>

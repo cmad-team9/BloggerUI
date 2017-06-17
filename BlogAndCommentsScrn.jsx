@@ -1,9 +1,10 @@
 import React from 'react';
-import {Form,FormGroup, ControlLabel,FormControl,Well,Button,ButtonGroup} from 'react-bootstrap'
+import {Form,FormGroup, ControlLabel,FormControl,Well,Button,ButtonGroup,Pager} from 'react-bootstrap'
 
 import BlogDisplay from './BlogDisplay.jsx';
 import CommentDisplay from './CommentDisplay.jsx';
 import BloggerConstants from './BloggerConstants';
+import { parse_link_header } from './BloggerUtils';
 import $ from 'jquery';
 
 class BlogAndCommentsScrn extends React.Component {
@@ -11,9 +12,10 @@ class BlogAndCommentsScrn extends React.Component {
 		super(props);
 		this.state = {
 			commentData : [],
-			sortOrder:BloggerConstants.COMMENTS_OLDEST_FIRST,
+			sortOrder:"oldest",
 			commentInputDescription : "",
-			commentInputDescriptionValid :null
+			commentInputDescriptionValid :null,
+			loadMoreCommentsLink : null
 
 		};
 		// console.log("test submitStatus:"+this.props.submitStatus);
@@ -28,17 +30,78 @@ class BlogAndCommentsScrn extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 
 		this.handleCancel = this.handleCancel.bind(this);
+		this.loadMoreComments = this.loadMoreComments.bind(this);
+
 
 
 	}
 
+	loadMoreComments() {
+
+		console.log("loading more comments**");
+		var targetUrl = this.state.loadMoreCommentsLink;
+		console.log("targetUrl in comment pagingOptions click :"+targetUrl);
+		//var loadedCommentCount = $("#loadMoreComments").data("loadedCommentCount");
+		var sortorder = this.state.sortOrder;
+		console.log("loading more comments sortorder:"+sortorder);
+	//	console.log("Total divs b4 adding :"+$("#commentPosts > div").length);
+		$.ajax({
+			url : targetUrl,
+			type : 'get',
+			contentType: "application/json; charset=utf-8",
+			data : {"sortOrder":sortorder},
+			dataType : 'json',
+			success : function(data,textStatus, jqXHR) {
+				console.log("loading more comments success callback");
+				// for(i = 0;i < data.length;i++){
+				// 	var newcommentIdx = (loadedCommentCount+i);
+				// 	console.log("new comment Id:"+newcommentIdx);
+				// 	var commentData = data[i].comment;
+				// 	var commentAuthor = data[i].commentor.userId;
+				// 	var commentTime = $.format.prettyDate(data[i].postedDate);
+				// 	comment = $("<div id ='comment'+newcommentIdx class='extradivs'>").append("<p id='comment'+newcommentIdx>"+commentData+"</p>")
+				// 			       .append($("<div id ='comment'+newcommentIdx+'meta' class='commentmeta' style='margin-left: 40%;font-size: 12px;font-style: italic;'>Posted by </div>")
+				// 				   .append("<span id = 'comment'+newcommentIdx+'author'>"+commentAuthor+" "+"</span>")
+				// 			       .append("<time id = 'comment'+newcommentIdx+'time'>"+commentTime+"</time>"))
+				// 				   .append('<hr/>');;
+				//
+				// 	$("#commentPosts").append(comment);
+				// 	console.log("Total divs after adding :"+$("#commentPosts > div").length);
+				// 	console.log("Comment:"+data[i].comment);
+				// 	console.log("commentor:"+data[i].commentor.userId);
+				// 	console.log("Blog id:"+data[i].blogId);
+				// 	console.log("Comment created time:"+data[i].postedDate);
+				// 	console.log("Comment created time:"+($.format.prettyDate(data[i].postedDate)));
+				this.setState({
+    			commentData: this.state.commentData.concat(data)
+			});
+
+				//}
+			//	$("#loadMoreComments").data("loadedCommentCount",loadedCommentCount+data.length);
+				this.configureCommentPagingOptions(jqXHR.getResponseHeader("LINK"));
+			}.bind(this),
+			error : function( jqXHR,textStatus, errorThrown ) {
+				console.log("loading more comments error callback :"+jqXHR+" textStatus:"+textStatus+" errorThrown :"+errorThrown);
+				//showErrorScreen("Unexpected error");
+			}.bind(this),
+			 complete : function( jqXHR, textStatus ) {
+				console.log("loading more comments complete callback");
+			}.bind(this)
+
+		});
+
+	}
+
 changeCommentSortingOrder(event) {
-		console.log("changeCommentSortingOrder"+event.target.value);
+	const target = event.target;
+	const value = target.value;
+	const name = target.name;
+		console.log("changeCommentSortingOrder ++ :"+event.target.value);
 		var sortingorder = event.target.value;
-		console.log("sorting order sortingorder:"+sortingorder);
+		console.log("sorting order sortingorder ++:"+sortingorder);
 		//console.log("sorting order sortingorder text:"+$('#commentSortingOrder').find(":selected").text());
 	//	var blogId = this.props.selectedBlogData.blogId;
-		console.log("sorting order blogId:"+blogId);
+		//console.log("sorting order blogId:"+blogId);
 	//	$("#loadMoreComments").hide();
 	//	$("#loadMoreComments").removeData("targetUrl");
 	//	$("#loadMoreComments").data("sortorder",sortingorder);
@@ -55,18 +118,41 @@ changeCommentSortingOrder(event) {
 		// 		break;
 		// }
 //	});
-const target = event.target;
-const value = target.value;
-const name = target.name;
+			console.log("B4 setting state sortOrder##++:"+this.state.sortOrder);
 			this.setState({
-				sortOrder : value
-			});
-			fetchBlogComments();
+				sortOrder : sortingorder},
+				function () {
+        console.log("########################CB FUNC sortOrder++:"+this.state.sortOrder);
+				this.fetchBlogComments();
+    		}
+			);
+			console.log("After setting state sortOrder++:"+this.state.sortOrder);
+
 
 	}
 
 	configureCommentPagingOptions(linkheader) {
+		this.setState({
+			loadMoreCommentsLink : null
+		});
+		if(linkheader.length != 0) {
+			var parsedLinks = parse_link_header(linkheader);
+			console.log("Parsing linkheader :"+parsedLinks);
+			for (var key in parsedLinks) {
+				var keyToMatch = key.toLowerCase();
+				console.log("keyToMatch:"+keyToMatch);
 
+				if(keyToMatch === "next") {
+					console.log("Showing load more comments");
+					//$("#loadMoreComments").show();
+					//$("#loadMoreComments").data("targetUrl",parsedLinks[key]);
+					this.setState({
+						loadMoreCommentsLink : parsedLinks[key]
+					});
+
+				}
+			}
+	} 
 	}
 
 	requestLogin() {
@@ -93,12 +179,15 @@ fetchBlogComments() {
 		var blogId = this.props.selectedBlogData.blogId;
 		console.log("fetchBlogComments blogId :"+blogId);
 		console.log("fetchBlogComments blogtitle :"+this.props.selectedBlogData.title);
+		console.log("fetchBlogComments this.state.sortOrder :"+this.state.sortOrder);
+		console.log("fetchBlogComments this.state.sortOrder val :"+this.state.sortOrder);
+
 		$.ajax({
 			url : 'rest/blogger/blogs/'+blogId+'/comments',
 			type : 'get',
 			contentType: "application/json; charset=utf-8",
 			dataType : 'json',
-			data : {"offset": "0","pageSize": "3","sortOrder":this.state.sortOrder},
+			data : {"offset": "0","pageSize": BloggerConstants.COMMENT_PAGESIZE,"sortOrder":this.state.sortOrder},
 			success : function(data,textStatus, jqXHR) {
 				console.log("fetchBlogComments success callback:"+data);
 				// for(i = 0;i < data.length;i++){
@@ -345,6 +434,12 @@ handleCancel(event) {
 													</Form>
     var commentInput = (this.props.loggedInUser != "") ?commentTextArea:loginLink;
 		console.log("commentInput **:"+commentInput);
+		var loadMoreCommentsOption;
+		if (this.state.loadMoreCommentsLink != null ) {
+			loadMoreCommentsOption = <Pager>
+															    <Pager.Item onClick={this.loadMoreComments}href="#">Load More Comments</Pager.Item>
+															  </Pager>
+		}
 
 		return (
 			<div >
@@ -354,8 +449,8 @@ handleCancel(event) {
 					<Form inline style={selectStyle}>
 											<FormGroup controlId="formInlineSelect">
 											<FormControl componentClass="select" placeholder="select" onChange={this.changeCommentSortingOrder} >
-											<option value="BloggerConstants.COMMENTS_OLDEST_FIRST">Oldest First</option>
-											<option value="BloggerConstants.COMMENTS_RECENT_FIRST">Recent First</option>
+											<option value="oldest">Oldest First</option>
+											<option value="newest">Recent First</option>
 											</FormControl>
 										</FormGroup>
 						</Form>
@@ -364,6 +459,7 @@ handleCancel(event) {
 				{commentInput}
 				<hr style= {hrStyle}/>
 				{commentDataToRender}
+				{loadMoreCommentsOption}
 		</div>
 
 

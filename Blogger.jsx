@@ -195,13 +195,19 @@
 			console.log("Blogger onNavOptionsSelectCB option:"+option);
 			console.log("Blogger onNavOptionsSelectCB param:"+param);
 			var nextAppState = this.state.currentAppState; // initialize
-			var loginReason = BloggerConstants.LOGIN_TO_APP;
+			var loginReason = this.state.loginReason;
 			var searchString = "";
 			console.log("Blogger onNavOptionsSelectCB CURRENTSTATE:"+nextAppState);
 
 			switch (option) {
 				case BloggerConstants.NAVBAR_HOME:
-
+				if(this.state.loggedInUserId != "") {
+					console.log("BLOGGER NAVBAR_HOME  going to STATE_HOME_LOGGEDIN");
+					nextAppState = BloggerConstants.STATE_HOME_LOGGEDIN;
+				} else {
+					console.log("BLOGGER NAVBAR_HOME  going to STATE_HOME_LOGGEDOUT");
+					nextAppState = BloggerConstants.STATE_HOME_LOGGEDOUT;
+				}
 						break;
 			 case BloggerConstants.NAVBAR_SEARCH:
 			 			nextAppState = BloggerConstants.STATE_HOME_SEARCHRESULTS;
@@ -226,7 +232,8 @@
 
 							break;
 				case BloggerConstants.NAVBAR_LOGOUT:
-
+						window.sessionStorage.clear();
+						nextAppState = BloggerConstants.STATE_HOME_LOGGEDOUT;
 						break;
 
 				case BloggerConstants.NAVBAR_FILTER_MYBLOGS:
