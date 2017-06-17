@@ -73,9 +73,10 @@ class BlogDisplay extends React.Component {
 			fontWeight:"bold"
 		}
     var metaStyle = {
-			textAlign:"right",
+			//textAlign:"right",
 			fontStyle:"italic",
-      fontWeight:"bold"
+			fontSize :"12px"
+    //  fontWeight:"bold"
 		}
 		var blogTitle = (this.props.blogData === undefined) ? "":this.props.blogData.title;
 		var blogDescription = (this.props.blogData === undefined) ? "":this.props.blogData.description;
@@ -87,7 +88,7 @@ class BlogDisplay extends React.Component {
 		}
 		return (
 
-      <Well style={style}>
+      <div style={style}>
         <h4 id ="postHeading" style={headingStyle}>{blogTitle}</h4>
         <p id ="postContent">
           {blogDescription}
@@ -97,7 +98,7 @@ class BlogDisplay extends React.Component {
             <time id = "posttime"> <TimeAgo date={blogPostedDate}/></time>
         </div>
         {addViewComments}
-      </Well>
+      </div>
 
 
 		);

@@ -7,6 +7,7 @@
 	import BloggerHome from './BloggerHome.jsx';
 	//import CommentDisplay from './CommentDisplay.jsx'; // Should be remvd
 	import BlogAndCommentsScrn from './BlogAndCommentsScrn.jsx';
+	import UserProfile from './UserProfile.jsx';
 	import BloggerConstants from './BloggerConstants';
 	import $ from 'jquery';
 
@@ -30,7 +31,8 @@
 				loggedInUserId : "",
 				loginReason : BloggerConstants.LOGIN_TO_APP,
 				searchStr : "",
-				selectedBlog : null
+				selectedBlog : null,
+				userProfileData : null
 
 			};
 			this.onLoginRequestForComment = this.onLoginRequestForComment.bind(this);
@@ -38,9 +40,73 @@
 			this.onLoginDataReceivedCB = this.onLoginDataReceivedCB.bind(this);
 			this.onNewUserDataReceivedCB = this.onNewUserDataReceivedCB.bind(this);
 			this.onNewBlogDataReceivedCB = this.onNewBlogDataReceivedCB.bind(this);
-
+			this.getUserData = this.getUserData.bind(this);
 			this.onUserTriggerForDetailedViewCB = this.onUserTriggerForDetailedViewCB.bind(this);
+			this.onUpdatedUserDataReceivedCB = this.onUpdatedUserDataReceivedCB.bind(this);
+
 		}
+
+		getUserData() {
+			var userId = this.state.loggedInUserId;
+	console.log("updateProfileBtn profile userid :"+userId);
+	$.ajax({
+		url : 'rest/blogger/user/'+userId,
+		type : 'get',
+		contentType: "application/json; charset=utf-8",
+		headers: {"AUTHORIZATION": window.sessionStorage.getItem('accessToken')},
+		dataType : 'json',
+		success : function(data,textStatus, jqXHR) {
+			console.log("updateProfile success callback");
+			console.log("data.firstName :"+data.firstName);
+			console.log("data.lastName :"+data.lastName);
+			console.log("data.nickName :"+data.nickName);
+			// $("#updatedpassword").attr("placeholder","");
+			// $("#updatedfirstname").attr("placeholder",data.firstName);
+			// $("#updatedlastname").attr("placeholder",data.lastName);
+			// $("#updatednickname").attr("placeholder",data.nickName);
+			// hideAllScreens();
+			// $("#profileUpdateScreen").show();
+			this.setState({
+			 userProfileData: data,
+			 currentAppState : BloggerConstants.STATE_PROFILE_UPDATE
+		 });
+		}.bind(this),
+		error : function( jqXHR,textStatus, errorThrown ) {
+			console.log("updateProfile error callback :"+jqXHR+" textStatus:"+textStatus+" errorThrown:"+errorThrown);
+			//showErrorScreen("Unexpected Error");
+		}.bind(this),
+		 complete : function( jqXHR, textStatus ) {
+			console.log("updateProfile complete callback");
+		}.bind(this)
+	});
+		}
+
+onUpdatedUserDataReceivedCB(userData) {
+	$.ajax({
+			url : 'rest/blogger/user',
+			type : 'put',
+			contentType: "application/json; charset=utf-8",
+			headers: {"AUTHORIZATION": window.sessionStorage.getItem('accessToken')},
+			success : function(data,textStatus, jqXHR) {
+				console.log("saveProfileBtn success callback");
+				//configureMenuBarOptions("loggedIn");
+				//$("#myblogsFilter").val("My Blogs");
+				//fetchAllBlogs(null,userId);
+				this.setState({
+					currentAppState:BloggerConstants.STATE_HOME_LOGGEDIN
+
+				});
+			}.bind(this),
+			error : function( jqXHR,textStatus, errorThrown ) {
+				console.log("saveProfileBtn error callback :"+jqXHR+" textStatus:"+textStatus+" errorThrown:"+errorThrown);
+				//showErrorScreen("Unexpected error");
+			}.bind(this),
+			 complete : function( jqXHR, textStatus ) {
+				console.log("saveProfileBtn complete callback");
+			}.bind(this),
+			data : JSON.stringify(userData)
+		});
+}
 
 		onUserTriggerForDetailedViewCB(blogData) {
 			console.log("Blogger onUserTriggerForDetailedViewCB :"+blogData);
@@ -229,6 +295,8 @@
 
 						break;
 			 case BloggerConstants.NAVBAR_UPDATE_PROFILE:
+			 				// Update state in the success callback of getUserData
+			 				this.getUserData();
 
 							break;
 				case BloggerConstants.NAVBAR_LOGOUT:
@@ -389,6 +457,13 @@
 				currentScreenLayout =  <div>
 																		{NavBarConfig}
 																		<BlogAndCommentsScrn selectedBlogData = {this.state.selectedBlog} loggedInUser = {this.state.loggedInUserId} onLoginRequestForComment={this.onLoginRequestForComment}/>
+															 </div>
+															 break;
+				case BloggerConstants.STATE_PROFILE_UPDATE:
+				console.log("Showing STATE_PROFILE_UPDATE :"+this.state.userProfileData);
+				currentScreenLayout =  <div>
+																		<TNavBar configureOptions={BloggerConstants.NAVBAR_SHOW_LOGGEDIN_OPTIONS} loggedInUserId={this.state.loggedInUserId} onNavOptionsSelect={this.onNavOptionsSelectCB}/>
+																		<UserProfile userData = {this.state.userProfileData} onUpdatedUserDataReceived={this.onUpdatedUserDataReceivedCB} />
 															 </div>
 															 break;
 
