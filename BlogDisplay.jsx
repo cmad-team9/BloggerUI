@@ -73,7 +73,7 @@ class BlogDisplay extends React.Component {
 			fontWeight:"bold"
 		}
     var metaStyle = {
-			//textAlign:"right",
+			textAlign:"right",
 			fontStyle:"italic",
 			fontSize :"12px"
     //  fontWeight:"bold"
@@ -84,7 +84,7 @@ class BlogDisplay extends React.Component {
 		var blogPostedDate = (this.props.blogData === undefined) ? "":this.props.blogData.postedDate;
 		var addViewComments = null;
 		if(this.props.hideCommentOption != true){
-			addViewComments = <a href="#" id = "commentOptionspost" onClick={this.handleViewAddComments} >COMMENTS </a>
+			addViewComments = <a href="#" id = "commentOptionspost" onClick={this.handleViewAddComments} >View/Add Comments </a>
 		}
 		return (
 
