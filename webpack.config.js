@@ -4,7 +4,7 @@ config = {
 	output: {
 		//path:'C:\\CMADCW\\UI\\React',
 		//path:'C:\\CMADCW\\cmad-t9bloggerV3\\src\\main\\webapp',
-		path: __dirname + '/output',
+		path: __dirname,
 		filename: 'index.js'
 	},
 

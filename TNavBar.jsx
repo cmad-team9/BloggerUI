@@ -137,7 +137,7 @@ onHomeSelect() {
 			<Navbar inverse collapseOnSelect fixedTop>
 				<Navbar.Header  >
 				  <Navbar.Brand >
-					<a href="#"  onClick={this.onHomeSelect}>CloudTest4</a>
+					<a href="#"  onClick={this.onHomeSelect}>CloudTest5</a>
 				  </Navbar.Brand>
 				  <Navbar.Toggle />
 				</Navbar.Header>
