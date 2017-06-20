@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --hot",
-    "production": "webpack -p"
+    "production": "rm -r output/* && webpack -p"
   },
   "author": "Bino Varghese",
   "license": "ISC",
