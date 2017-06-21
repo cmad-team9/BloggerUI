@@ -1,8 +1,6 @@
 import React from 'react';
 import {FormGroup, ControlLabel,FormControl,Button} from 'react-bootstrap'
 
-
-
 class NewBlog extends React.Component {
 	constructor(props){
 		super(props);
@@ -11,18 +9,15 @@ class NewBlog extends React.Component {
 			blogDescription: "",
 			blogTitleValid:null,
 			blogTitleValid:null
-
 		};
-		 console.log("test submitStatus:"+this.props.submitStatus);
-		  console.log("test submitStatusCB:"+this.props.onSubmitStatusChanged);
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleCancel = this.handleCancel.bind(this);
 	}
 
 	handleChange(event) {
-		console.log("handle change :"+event.target.value);
-		console.log("handle change :"+event.target.name);
+		console.log("New Blog handle change :"+event.target.value);
+		console.log("New blog handle change :"+event.target.name);
 		const target = event.target;
 		const value = target.value;
 		const name = target.name;
@@ -34,7 +29,7 @@ class NewBlog extends React.Component {
 	}
 
 	handleSubmit(event) {
-		console.log("==handleSubmit :"+event.target.value);
+		console.log("New blog handleSubmit :"+event.target.value);
 		console.log("handleSubmit this.state.blogTitle.length:"+this.state.blogTitle.length);
 		event.preventDefault();
 		var validationError = false;
@@ -48,20 +43,15 @@ class NewBlog extends React.Component {
 			this.setState({blogDescriptionValid: "error"});
 			validationError = true;
 		}
-		if(!validationError){
-
-			console.log('An essay was submitted:-- ' + this.state.blogTitle +" "+ this.state.blogDescription);
-			console.log("props:"+this.props.onNewBlogDataReceived);
-			var newBlogData = {
-				title : this.state.blogTitle,
-				description : this.state.blogDescription
-
+			if(!validationError){
+				console.log('New blog was submitted:-- ' + this.state.blogTitle +" "+ this.state.blogDescription);
+				console.log("props:"+this.props.onNewBlogDataReceived);
+				var newBlogData = {
+					title : this.state.blogTitle,
+					description : this.state.blogDescription
+				}
+				this.props.onNewBlogDataReceived(newBlogData);
 			}
-			this.props.onNewBlogDataReceived(newBlogData);
-
-		}
-
-
 	}
 
 	handleCancel(event) {

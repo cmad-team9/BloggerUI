@@ -36,8 +36,6 @@ const BloggerConstants = {
     LOGIN_TO_ADDBLOG : "LoginToAddBlog",
     LOGIN_TO_ADDCOMMENT : "LoginToAddComment",
 
-  
-
     // App configurations
     BLOG_PAGESIZE : 3,
     COMMENT_PAGESIZE : 3
