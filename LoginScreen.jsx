@@ -48,16 +48,26 @@ class LoginScreen extends React.Component {
       console.log('Login details submitted: ' + this.state.userId +" "+ this.state.password);
       console.log('Login details submitted this.props.loginReason:'+this.props.loginReason);
       var loginData = {"userData" : {
-        "userId" : this.state.userId,
-        "password" : this.state.password
-      },
-      "loginReason" : this.props.loginReason
-    }
-    console.log('Login details submitted :'+loginData);
-    console.log('Login details submitted usrDetails:'+loginData.userData);
-    console.log('Login details submitted loginReason:'+loginData.loginReason);
-    console.log('Login details submitted :'+JSON.stringify(loginData));
+                                      "userId" : this.state.userId,
+                                      "password" : this.state.password
+                                    },
+                                    "loginReason" : this.props.loginReason
+                      }
+    console.log('Login details submitted ++:'+loginData);
+    console.log('Login details submitted usrDetails ++:'+loginData.userData);
+    console.log('Login details submitted loginReason ++:'+loginData.loginReason);
+    console.log('Login details submitted ++:'+JSON.stringify(loginData));
+    console.log('Login details b4 submit userId setting state with value++: ' + this.state.userId);
     this.props.onLoginDataReceived(loginData);
+    this.setState({
+      userId: "",
+      password: "",
+      userIdValid:null,
+      passwordValid:null
+    });
+  //  loginUserId.value = "";
+  //  loginPassword.value = "";
+    console.log('Login details after submitted userId: ' + this.state.userId);
   }
 }
 
@@ -86,10 +96,10 @@ render() {
           controlId="loginUserId"
           validationState={this.state.userIdValid}>
           <Col componentClass={ControlLabel} smOffset={7} sm={2}>
-            Email
+            User Id
           </Col>
           <Col sm={3}>
-            <FormControl type="email" placeholder="Email"  name="userId" onChange={this.handleChange}/>
+            <FormControl type="input" placeholder="User Id"  name="userId" onChange={this.handleChange}/>
           </Col>
         </FormGroup>
 

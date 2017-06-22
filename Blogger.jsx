@@ -132,7 +132,15 @@ class Blogger extends React.Component {
 					console.log("saveSignUpDetailsBtn complete callback");
 
 				}.bind(this),
-				data : JSON.stringify(newUserData.userDetails)
+				data : JSON.stringify(newUserData.userDetails),
+				statusCode: {
+					409: function() {
+						alert('User already exists.Please sign in');
+						this.setState({
+							currentAppState:BloggerConstants.STATE_HOME_LOGGEDOUT
+						});
+					}.bind(this)
+				}
 			});
 		}
 	}
@@ -196,58 +204,68 @@ class Blogger extends React.Component {
 		var loginReason = this.state.loginReason;
 		var searchString = "";
 		console.log("Blogger onNavOptionsSelectCB CURRENTSTATE:"+nextAppState);
-		switch (option) {
-			case BloggerConstants.NAVBAR_HOME:
-			if(this.state.loggedInUserId != "") {
-				console.log("BLOGGER NAVBAR_HOME  going to STATE_HOME_LOGGEDIN");
-				nextAppState = BloggerConstants.STATE_HOME_LOGGEDIN;
-			} else {
-				console.log("BLOGGER NAVBAR_HOME  going to STATE_HOME_LOGGEDOUT");
-				nextAppState = BloggerConstants.STATE_HOME_LOGGEDOUT;
-			}
-			break;
-			case BloggerConstants.NAVBAR_SEARCH:
-			nextAppState = BloggerConstants.STATE_HOME_SEARCHRESULTS;
-			searchString = param;
-			break;
-			case BloggerConstants.NAVBAR_LOGIN:
-			nextAppState = BloggerConstants.STATE_LOGIN;
-			break;
-			case BloggerConstants.NAVBAR_CREATE_BLOG:
-			console.log("Blogger onNavOptionsSelectCB currentAppState :"+this.state.currentAppState)
-			if(this.state.currentAppState === BloggerConstants.STATE_HOME_LOGGEDIN){
-				console.log("Blogger onNavOptionsSelectCB currentAppState tp1");
-				nextAppState = BloggerConstants.STATE_NEW_BLOG;
-			} else {
-				loginReason  = BloggerConstants.LOGIN_TO_ADDBLOG;
-				nextAppState = BloggerConstants.STATE_LOGIN;
-				console.log("Blogger onNavOptionsSelectCB currentAppState tp2");
-			}
-			break;
-			case BloggerConstants.NAVBAR_UPDATE_PROFILE:
-			// Update state in the success callback of getUserData
-			this.getUserData();
-			break;
-			case BloggerConstants.NAVBAR_LOGOUT:
+		if(option === BloggerConstants.NAVBAR_LOGOUT) {
+			console.log("Handling log out");
 			window.sessionStorage.clear();
-			nextAppState = BloggerConstants.STATE_HOME_LOGGEDOUT;
-			break;
-			case BloggerConstants.NAVBAR_FILTER_MYBLOGS:
-			nextAppState = BloggerConstants.STATE_HOME_LOGGEDIN;
-			break;
-			case BloggerConstants.NAVBAR_FILTER_ALLBLOGS:
-			nextAppState = BloggerConstants.STATE_HOME_LOGGEDIN_ALLBLOGS;
-			break;
-			default:
-			break;
+			this.setState({
+				currentAppState: BloggerConstants.STATE_HOME_LOGGEDOUT,
+				loggedInUserId : "",
+				loginReason : BloggerConstants.LOGIN_TO_APP,
+				searchStr : "",
+				selectedBlog : null,
+				userProfileData : null
+			});
+		} else {
+			switch (option) {
+				case BloggerConstants.NAVBAR_HOME:
+				if(this.state.loggedInUserId != "") {
+					console.log("BLOGGER NAVBAR_HOME  going to STATE_HOME_LOGGEDIN");
+					nextAppState = BloggerConstants.STATE_HOME_LOGGEDIN;
+				} else {
+					console.log("BLOGGER NAVBAR_HOME  going to STATE_HOME_LOGGEDOUT");
+					nextAppState = BloggerConstants.STATE_HOME_LOGGEDOUT;
+				}
+				break;
+				case BloggerConstants.NAVBAR_SEARCH:
+							nextAppState = BloggerConstants.STATE_HOME_SEARCHRESULTS;
+							searchString = param;
+							break;
+				case BloggerConstants.NAVBAR_LOGIN:
+							nextAppState = BloggerConstants.STATE_LOGIN;
+							break;
+				case BloggerConstants.NAVBAR_CREATE_BLOG:
+							console.log("Blogger onNavOptionsSelectCB currentAppState :"+this.state.currentAppState)
+							//if(this.state.currentAppState === BloggerConstants.STATE_HOME_LOGGEDIN){
+							if(this.state.loggedInUserId != "") {
+								console.log("Blogger onNavOptionsSelectCB currentAppState tp1");
+								nextAppState = BloggerConstants.STATE_NEW_BLOG;
+							} else {
+								loginReason  = BloggerConstants.LOGIN_TO_ADDBLOG;
+								nextAppState = BloggerConstants.STATE_LOGIN;
+								console.log("Blogger onNavOptionsSelectCB currentAppState tp2");
+							}
+							break;
+				case BloggerConstants.NAVBAR_UPDATE_PROFILE:
+							// Update state in the success callback of getUserData
+							this.getUserData();
+							break;
+				case BloggerConstants.NAVBAR_FILTER_MYBLOGS:
+							nextAppState = BloggerConstants.STATE_HOME_LOGGEDIN;
+							break;
+				case BloggerConstants.NAVBAR_FILTER_ALLBLOGS:
+							nextAppState = BloggerConstants.STATE_HOME_LOGGEDIN_ALLBLOGS;
+							break;
+				default:
+							break;
+			}
+			console.log("Blogger onNavOptionsSelectCB nextAppState:"+nextAppState);
+			console.log("Blogger onNavOptionsSelectCB setting loginReason :"+loginReason);
+			this.setState({
+				currentAppState:nextAppState,
+				loginReason : loginReason,
+				searchStr : searchString
+			});
 		}
-		console.log("Blogger onNavOptionsSelectCB nextAppState:"+nextAppState);
-		console.log("Blogger onNavOptionsSelectCB setting loginReason :"+loginReason);
-		this.setState({
-			currentAppState:nextAppState,
-			loginReason : loginReason,
-			searchStr : searchString
-		});
 		console.log("Nav bar processing on Blogger loginReason: "+this.state.loginReason);
 	}
 
@@ -260,6 +278,8 @@ class Blogger extends React.Component {
 			headers: {"AUTHORIZATION": window.sessionStorage.getItem('accessToken')},
 			success : function(data,textStatus, jqXHR) {
 				console.log("submitNewBlogbtn success callback");
+				console.log("Location Header :"+jqXHR.getResponseHeader("LOCATION"));
+				console.log("Status Code :"+jqXHR.status);
 				this.setState({
 					currentAppState:BloggerConstants.STATE_HOME_LOGGEDIN
 				});
@@ -334,7 +354,7 @@ class Blogger extends React.Component {
 			console.log("Showing STATE_HOME_SEARCHRESULTS");
 			currentScreenLayout =  <div>
 				{NavBarConfig}
-				<BloggerHome searchStr = {this.state.searchStr}/>
+				<BloggerHome onUserTriggerForDetailedView ={this.onUserTriggerForDetailedViewCB} searchStr = {this.state.searchStr}/>
 			</div>
 			break;
 			case BloggerConstants.STATE_SIGNUP:

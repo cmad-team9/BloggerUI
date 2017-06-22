@@ -1,6 +1,6 @@
 import React from 'react';
 import {FormGroup, ControlLabel,FormControl,Well} from 'react-bootstrap'
-import TimeAgo from 'react-timeago'
+import Moment from 'react-moment';
 
 
 class CommentDisplay extends React.Component {
@@ -30,7 +30,7 @@ class CommentDisplay extends React.Component {
         <p>{commentDescription}</p>
 			  <div id ='commentmeta'  style={metaStyle}>Posted by
 								   <span id = 'commentauthor'> {commentAuthor}</span>
-							     <time id = 'commenttime'> <TimeAgo date={commentTime}/></time>
+							     <time id = 'commenttime'> <Moment fromNow>{commentTime}</Moment> </time>
         </div>
         <hr/>
       </div>

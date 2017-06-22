@@ -81,11 +81,34 @@
 				userAddReason : this.props.userAddReason
 			}
 			this.props.onNewUserDataReceived(newUserData);
+			this.setState({
+				userId: "",
+				password: "",
+	      firstName: "",
+	      lastName:"",
+	      nickName:"",
+	      userIdValid:null,
+				passwordValid:null,
+	      firstNameValid:null,
+	      lastNameValid:null,
+	      nickNameValid:null
+			});
+			// signUpUserId.value = "";
+	    // signUpPassword.value = "";
+			// signUpfirstName.value = "";
+	    // signUplastName.value = "";
+			// signUpnickName.value = "";
+
 		}
 		}
 
 		handleCancel(event) {
 			this.setState({
+				userId: "",
+				password: "",
+	      firstName: "",
+	      lastName:"",
+	      nickName:"",
 	      userIdValid:null,
 				passwordValid:null,
 	      firstNameValid:null,
@@ -101,6 +124,7 @@
 				marginRight:"35%"
 			};
 			var headingStyle = {
+				marginTop: "5%",
 				textAlign:"center",
 				fontWeight:"bold"
 			}
@@ -110,22 +134,22 @@
 			return (
 
 				<div >
-					<h3 style={headingStyle}>Signing up is easy :)</h3>
+					<h3 style={headingStyle}>Signing up is easy </h3>
 
 	        <Form horizontal style={style}>
 	           <FormGroup
-	             controlId="loginUserId"
+	             controlId="signUpUserId"
 	              validationState={this.state.userIdValid}>
 	             <Col componentClass={ControlLabel} smOffset={4} sm={3}>
-	               Email
+	               User Id
 	             </Col>
 	             <Col sm={5}>
-	               <FormControl type="email" placeholder="Email"  name="userId" onChange={this.handleChange}/>
+	               <FormControl type="input" placeholder="User Id"  name="userId" onChange={this.handleChange}/>
 	             </Col>
 	           </FormGroup>
 
 	           <FormGroup
-	             controlId="loginPassword"
+	             controlId="signUpPassword"
 	             validationState={this.state.passwordValid}>
 	             <Col componentClass={ControlLabel} smOffset={4} sm={3}>
 	               Password
@@ -136,7 +160,7 @@
 	           </FormGroup>
 
 	           <FormGroup
-	             controlId="firstName"
+	             controlId="signUpfirstName"
 	              validationState={this.state.firstNameValid}>
 	             <Col componentClass={ControlLabel} smOffset={4} sm={3}>
 	               First Name
@@ -147,7 +171,7 @@
 	           </FormGroup>
 
 	           <FormGroup
-	             controlId="lastName"
+	             controlId="signUplastName"
 	              validationState={this.state.lastNameValid}>
 	             <Col componentClass={ControlLabel} smOffset={4} sm={3}>
 	               Last Name
@@ -158,7 +182,7 @@
 	           </FormGroup>
 
 	           <FormGroup
-	             controlId="nickName"
+	             controlId="signUpnickName"
 	              validationState={this.state.nickNameValid}>
 	             <Col componentClass={ControlLabel} smOffset={4} sm={3}>
 	               NickName

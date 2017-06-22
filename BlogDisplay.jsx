@@ -1,6 +1,6 @@
 import React from 'react';
 import {FormGroup, ControlLabel,FormControl,Well} from 'react-bootstrap';
-import TimeAgo from 'react-timeago'
+import Moment from 'react-moment';
 
 
 
@@ -47,7 +47,7 @@ class BlogDisplay extends React.Component {
         </p>
         <div id ="postmeta"style={metaStyle}> Posted by
             <span id = "postauthor"> {blogAuthor}</span>
-            <time id = "posttime"> <TimeAgo date={blogPostedDate}/></time>
+            <time id = "posttime"> <Moment fromNow>{blogPostedDate}</Moment></time>
         </div>
         {addViewComments}
       </div>
